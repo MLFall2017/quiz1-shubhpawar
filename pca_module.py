@@ -17,8 +17,11 @@ X = pd.read_csv(
 
 X.columns=['x', 'y', 'z']
 X.dropna(how="all", inplace=True) # drops the empty line at file-end
-
 X.tail()
+
+variance_vec = np.var(X, axis=0)
+covariance_xy = np.cov(X.iloc[:,0], X.iloc[:,1])
+covariance_yz = np.cov(X.iloc[:,1], X.iloc[:,2])                
 
 X_std = StandardScaler().fit_transform(X)
 
@@ -36,27 +39,9 @@ matrix_w = np.hstack((eig_pairs[0][1].reshape(3,1),
 
 Y = X_std.dot(matrix_w)
 
-with plt.style.context('seaborn-whitegrid'):
-    plt.figure(figsize=(6, 4))
-    for item in Y:
-        plt.scatter(item[0],
-                    item[1])
-    plt.xlabel('Principal Component 1')
-    plt.ylabel('Principal Component 2')
-    plt.legend(loc='lower center')
-    plt.tight_layout()
-    plt.show()
-    plt.savefig("pca.png")
-    
-Output:
-    
- Y
-Out[14]: 
-array([[-1.87969457, -0.03824594],
-       [-0.9058563 ,  0.03686758],
-       [ 0.20879921, -1.56793516],
-       ..., 
-       [ 0.4065895 ,  1.22909709],
-       [-2.52246051, -1.40864796],
-       [ 1.39674555, -0.48499987]])
+fig = plt.figure()
+ax = fig.add_subplot(1,1,1)
+ax.scatter(Y[:,0],Y[:,1])
+fig.show()
+plt.savefig("pca.png")
     
